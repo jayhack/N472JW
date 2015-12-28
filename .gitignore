@@ -1,0 +1,7 @@
+*.pyc
+*.pkl
+*.npy
+*.ipynb
+*/secrets.py
+
+
