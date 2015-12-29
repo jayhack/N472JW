@@ -24,34 +24,36 @@ class GapsGetFilled(StockMetric):
         self.__dict__.update(locals())
         
     def transform(self, data):
-        #=====[ Step 1: reindex ]=====
         df = data[['Low', 'High', 'Open', 'Close']].copy()
         df['Date'] = df.index
         df.index = range(len(df))
 
         #=====[ Step 2: find gaps ]=====
-        lows = np.array(df.iloc[0:-1].Low)
-
         down_gap_amounts = (np.array(df[0:-1].Low) - np.array(df[1:].High))
+        down_gap_sell_price = np.array(df[0:-1].Low)
         down_gaps = down_gap_amounts > 0
         up_gap_amounts = (np.array(df[1:].Low) - np.array(df[0:-1].High))
+        up_gap_buy_price = np.array(df[0:-1].High)
         up_gaps = up_gap_amounts > 0
-        up_gaps = (df[1:].Low > df[0:-1].High)
 
         #=====[ Step 3: reintegrate into series ]=====
         df['down_gap_amount'] = np.nan
         df['down_gap_amount'].iloc[1:] = down_gap_amounts
         df['down_gap'] = df.down_gap_amount > self.down_threshold
+        df['down_gap_sell_price'] = np.nan
+        df['down_gap_sell_price'][1:] = down_gap_sell_price
 
         df['up_gap_amount'] = np.nan
         df['up_gap_amount'].iloc[1:] = up_gap_amounts
         df['up_gap'] = df.up_gap_amount > self.up_threshold
+        df['up_gap_buy_price'] = np.nan
+        df['up_gap_buy_price'][1:] = up_gap_buy_price
 
         #=====[ Step 4: find occurrences ]=====
         df.index = df['Date']
         df = df.drop(['Date'], axis=1)
-        down_df = df[df.down_gap]['down_gap_amount']
-        up_df = df[df.up_gap]['up_gap_amount']
+        down_df = df[df.down_gap][['down_gap_amount', 'down_gap_sell_price']]
+        up_df = df[df.up_gap][['up_gap_amount', 'up_gap_buy_price']]
         return down_df, up_df
     
     def plot(self, data):
@@ -62,10 +64,10 @@ class GapsGetFilled(StockMetric):
         #=====[ Step 2: plot metrics ]=====
         data['Open'].plot(color='b', label='open price')
         ax = plt.gca()
-        for ix, row in down_df.iteritems():
-            ax.axvline(x=ix, color='r', linestyle='--', label='down gap')
-        for ix, row in up_df.iteritems():
-            ax.axvline(x=ix, color='g', linestyle='--', label='up gap')
+        for ix, row in down_df.iterrows():
+            ax.axvline(x=row.name, color='r', linestyle='--', label='down gap')
+        for ix, row in up_df.iterrows():
+            ax.axvline(x=row.name, color='g', linestyle='--', label='up gap')
 
         #=====[ Step 3: legend and title ]=====
         ax.legend(loc='lower right')

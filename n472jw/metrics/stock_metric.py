@@ -8,7 +8,9 @@ class StockMetric(object):
     """
     Class: StockMetric
     ==================
-    Abstract class that provides a stock metric;
+    Abstract class that provides a stock metric
+    Returns buy_df, sell_df
+    each one has a feature value and (optionally) a sell-price
     
     Usage:
     ------
