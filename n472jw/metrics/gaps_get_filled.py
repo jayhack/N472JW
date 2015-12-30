@@ -19,11 +19,18 @@ class GapsGetFilled(StockMetric):
     -----
     - up_threshold: minimum size of gap on upside
     - down_treshold: minimum size of gap on downside
+
+    #TODO#:
+    - thresholds should be a percentage of share price
     """
     def __init__(self, up_threshold=1, down_threshold=1):
         self.__dict__.update(locals())
         
-    def transform(self, data):
+    def ingest(self, data):
+        """
+        computes self.data, which contains info on up and down
+        gaps
+        """
         df = data[['Low', 'High', 'Open', 'Close']].copy()
         df['Date'] = df.index
         df.index = range(len(df))
@@ -52,22 +59,25 @@ class GapsGetFilled(StockMetric):
         #=====[ Step 4: find occurrences ]=====
         df.index = df['Date']
         df = df.drop(['Date'], axis=1)
-        down_df = df[df.down_gap][['down_gap_amount', 'down_gap_sell_price']]
-        up_df = df[df.up_gap][['up_gap_amount', 'up_gap_buy_price']]
-        return down_df, up_df
+        self.data = df
     
-    def plot(self, data):
+    def buy_orders(self):
+        """returns list of dates to buy on"""
+        return df[df.down_gap]
+
+    def plot(self, data=None):
         """finds metrics, plots inline"""
-        #=====[ Step 1: find metrics ]=====
-        down_df, up_df = self.transform(data)
+        #=====[ Step 1: ingest if necessary ]=====
+        if data is not None:
+            self.ingest(data)
 
         #=====[ Step 2: plot metrics ]=====
-        data['Open'].plot(color='b', label='open price')
         ax = plt.gca()
-        for ix, row in down_df.iterrows():
-            ax.axvline(x=row.name, color='r', linestyle='--', label='down gap')
-        for ix, row in up_df.iterrows():
-            ax.axvline(x=row.name, color='g', linestyle='--', label='up gap')
+        self.data.Open.plot(color='b', label='open price')
+        for date in self.data[self.data.down_gap].index:
+            ax.axvline(x=date, color='r', linestyle='-', label='down gap')
+        for date in self.data[self.data.up_gap].index:
+            ax.axvline(x=date, color='g', linestyle='-', label='up gap')
 
         #=====[ Step 3: legend and title ]=====
         ax.legend(loc='lower right')
