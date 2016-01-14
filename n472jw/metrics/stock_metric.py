@@ -25,25 +25,13 @@ class StockMetric(object):
         pass
         
     def ingest(self, data):
-    	"""computes internal metrics"""
+        """computes internal metrics on a window"""
         raise NotImplementedError("override this")
 
-    def buy_orders(self):
-    	"""returns dates to buy on"""
-    	raise NotImplementedError
+    def transform(self, data):
+        """returns feature representation of window"""
+        raise NotImplementedError
 
-   	def sell_orders(self):
-   		"""returns dates to sell on"""
-   		raise NotImplementedError
-
-    def stop_orders(self):
-    	"""returns stop orders to set"""
-    	raise NotImplementedError
-
-    def transform(self):
-    	"""returns feature representation of data at intervals"""
-    	raise NotImplementedError
-
-    def plot(self):
-    	"""returns a graphical representation of what was inferred"""
+    def plot(self, data=None):
+        """returns a graphical representation of what was inferred"""
         raise NotImplementedError("override this")

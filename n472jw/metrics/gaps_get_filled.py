@@ -28,6 +28,7 @@ class GapsGetFilled(StockMetric):
         
     def ingest(self, data):
         """
+        finds buy/sell at current point in time and sell point
         computes self.data, which contains info on up and down
         gaps
         """
