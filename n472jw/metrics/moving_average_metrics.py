@@ -5,7 +5,6 @@ StockMetric: CrossingMovingAverages
 """
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from stock_metric import StockMetric
 
 class CrossingMovingAverages(StockMetric):
@@ -21,7 +20,7 @@ class CrossingMovingAverages(StockMetric):
     """
 
     def __init__(self, ma1=50, ma2=200, wait_period=pd.Timedelta('30 days')):
-        super(CrossingMovingAverages, self).__init__()
+        super(self.__class__, self).__init__()
         self.__dict__.update(locals())
 
     def preprocess(self, data):
@@ -46,10 +45,11 @@ class CrossingMovingAverages(StockMetric):
         orders = []
         for ts, row in data[data.crossup].iterrows():
             order = {
-                'buy':row.ma1, # buy when it crosses over 200 day moving average
+                'Date':row.Date,
+                'buy_amt':row.ma1, # buy when it crosses over 200 day moving average
                 'stop_above':np.nan,
                 'stop_below':np.nan,
-                'sell_by': ts + self.wait_period
+                'limit_date': ts + self.wait_period
             }
             orders.append(order)
         return pd.DataFrame(orders)

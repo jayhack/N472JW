@@ -31,7 +31,6 @@ class StockMetric(object):
     def __init__(self, *args, **kwargs):
         pass
 
-
     def transform(self, data):
         """returns feature representation of window"""
         raise NotImplementedError

@@ -5,7 +5,6 @@ Metrics: gaps
 """
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from stock_metric import StockMetric
 
 class DownGapMetric(StockMetric):
@@ -22,12 +21,11 @@ class DownGapMetric(StockMetric):
     #TODO#:
     - self.min_gap_size should be a percentage of total size
     """
-    size = 2 #window size
-
     def __init__(self, min_gap_size=0.01, #expressed as a percentage of avg day price
                         max_hold=pd.Timedelta('30 days'),
                         stop_below=0.05 #lose a max of 5% before selling
                 ):
+        super(self.__class__, self).__init__()
         self.__dict__.update(locals())
 
     def preprocess(self, data):
