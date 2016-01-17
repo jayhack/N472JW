@@ -9,6 +9,13 @@ class StockMetric(object):
     Class: StockMetric
     ==================
     Abstract class that provides a stock metric
+    Ingests a list of stock charts and returns a dataframe of "orders"
+
+    #TODO# Formalize what an order is
+
+    Arguments:
+    ----------
+    - tickers: list of ticker names to operate on
 
     Input:
     ------
@@ -23,10 +30,7 @@ class StockMetric(object):
     """
     def __init__(self, *args, **kwargs):
         pass
-        
-    def ingest(self, data):
-        """computes internal metrics on a window"""
-        raise NotImplementedError("override this")
+
 
     def transform(self, data):
         """returns feature representation of window"""
