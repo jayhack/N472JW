@@ -13,10 +13,14 @@ class StockAnalyst(object):
     Class: StockAnalyst
     ===================
     Runs StockMetrics on stocks.
-    Optionally performs historical analysis
+    Optionally performs backtesting and comparison against supplied index
     """
-    def __init__(self):
-        pass
+    def __init__(self, index_csv='./data/sp_index.csv'):
+        self.sp_index = pd.read_csv(index_csv)
+        self.sp_index = pd.read_csv('./data/sp_index.csv')[::-1]
+        self.sp_index.Date = pd.to_datetime(self.sp_index.Date)
+        self.sp_index.index = self.sp_index.Date
+
 
     def apply(self, metric, data):
         """runs 'metric' on stock data, returning orders"""
@@ -36,16 +40,15 @@ class StockAnalyst(object):
         profits = []
         sell_dates = []
         sell_amts = []
+        index_profits = []
 
         #=====[ Step 1: get orders, iterate over them ]=====
         orders = self.apply(metric, data)
         for ix, order in orders.iterrows():
 
-
-
-
             #=====[ Step 2: compute some stats ]=====
             buy_amt = order.buy_amt
+            buy_date = order.Date
 
             greater_dates = np.where(order.Date > order.limit_date)[0]
             end_period = date.Date.iloc[greater_dates[0]] if len(greater_dates) > 0 else None # definitely sell by this date
@@ -63,7 +66,7 @@ class StockAnalyst(object):
                 if order.limit_date > period.Date.max():
                     sell_amt, sell_date = np.nan, np.nan
                 else:
-                    sell_date_ix = np.where(period.Date > order.limit_date)[0][0]
+                    sell_date_ix = np.where(period.Date >= order.limit_date)[0][0]
                     sell_date = period.iloc[sell_date_ix].Date
                     sell_amt = period.loc[sell_date].Close
 
@@ -83,8 +86,16 @@ class StockAnalyst(object):
             sell_dates.append(sell_date)
             sell_amts.append(sell_amt)
 
+            #=====[ Step 5: calculate index profit in same timeframe ]=====
+            if type(sell_date) is pd.tslib.Timestamp:
+                index_period = self.sp_index[buy_date:sell_date]
+                index_profit = (index_period.iloc[-1].Close - index_period.iloc[0].Open) / index_period.iloc[0].Open
+            else:
+                index_profit = np.nan
+            index_profits.append(index_profit)
 
         orders['profit'] = profits
         orders['sell_date'] = sell_dates
         orders['sell_amt'] = sell_amts
+        orders['index_profit'] = index_profits
         return orders

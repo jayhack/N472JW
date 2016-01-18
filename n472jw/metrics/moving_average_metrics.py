@@ -46,7 +46,7 @@ class CrossingMovingAverages(StockMetric):
         for ts, row in data[data.crossup].iterrows():
             order = {
                 'Date':row.Date,
-                'buy_amt':row.ma1, # buy when it crosses over 200 day moving average
+                'buy_amt':np.mean([row.Open, row.Close]), # buy when it crosses over 200 day moving average
                 'stop_above':np.nan,
                 'stop_below':np.nan,
                 'limit_date': ts + self.wait_period
