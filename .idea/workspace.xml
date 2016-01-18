@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b75d8f59-3b0f-4b30-be55-5e026aaaf811" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/n472jw/stock_analyst.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Exploration-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Exploration-checkpoint.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Exploration.ipynb" afterPath="$PROJECT_DIR$/Exploration.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/n472jw/metrics/gap_metrics.py" afterPath="$PROJECT_DIR$/n472jw/metrics/gap_metrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/n472jw/metrics/moving_average_metrics.py" afterPath="$PROJECT_DIR$/n472jw/metrics/moving_average_metrics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/n472jw/metrics/stock_metric.py" afterPath="$PROJECT_DIR$/n472jw/metrics/stock_metric.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="N472JW.iws" />
     <ignored path=".idea/workspace.xml" />
